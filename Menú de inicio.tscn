@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=3 uid="uid://dwmvs0ums26pb"]
+
+[ext_resource type="Texture2D" uid="uid://bra3fh1x675go" path="res://Imagenes/fondo inicio.png" id="1_kdqfs"]
+[ext_resource type="Script" uid="uid://dmt04ww7qv0ge" path="res://Scripts/inicio.gd" id="1_y65bj"]
+
+[sub_resource type="FontVariation" id="FontVariation_y65bj"]
+
+[sub_resource type="GDScript" id="GDScript_3rg2k"]
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y65bj")
+
+[node name="HBoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -483.0
+offset_top = 109.0
+offset_right = 486.0
+offset_bottom = 258.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("FontVariation_y65bj")
+theme_override_font_sizes/font_size = 70
+text = "Jugar"
+vertical_icon_alignment = 0
+expand_icon = true
+
+[node name="Button2" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 70
+text = "Salir"
+vertical_icon_alignment = 0
+expand_icon = true
+script = SubResource("GDScript_3rg2k")
+
+[node name="FondoInicio" type="Sprite2D" parent="."]
+show_behind_parent = true
+light_mask = 3
+position = Vector2(573.75, 324.25)
+scale = Vector2(1.5013072, 1.279324)
+texture = ExtResource("1_kdqfs")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -511.0
+offset_top = -294.0
+offset_right = 515.0
+offset_bottom = -102.75
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 100
+text = "TITULO DEL JUEGO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Button2" to="." method="_on_button_2_pressed"]

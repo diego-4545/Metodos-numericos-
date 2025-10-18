@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt5kpuy85ogdg"]
+
+[ext_resource type="Texture2D" uid="uid://cepl1t8qp3jv3" path="res://Imagenes/fondo bosque.png" id="1_dnncc"]
+
+[node name="Mundo1" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 6.0
+offset_right = 40.0
+offset_bottom = 46.0
+
+[node name="FondoBosque" type="Sprite2D" parent="."]
+position = Vector2(579.25, 321.25)
+scale = Vector2(1.3358382, 1.0834711)
+texture = ExtResource("1_dnncc")
