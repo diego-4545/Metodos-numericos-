@@ -14,3 +14,7 @@ config/name="Métodos númericos"
 run/main_scene="uid://dwmvs0ums26pb"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://Scripts/Global.gd"

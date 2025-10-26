@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://dt5kpuy85ogdg"]
+
+[ext_resource type="Script" uid="uid://dcdr8c7xyu38j" path="res://Scripts/batalla.gd" id="1_rvmw3"]
+[ext_resource type="Texture2D" uid="uid://bra3fh1x675go" path="res://Imagenes/fondo inicio.png" id="2_j82uf"]
+
+[node name="Mundo1" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 6.0
+offset_right = 40.0
+offset_bottom = 46.0
+script = ExtResource("1_rvmw3")
+
+[node name="FondoInicio" type="Sprite2D" parent="."]
+position = Vector2(579.25, 321.75)
+scale = Vector2(1.5104575, 1.305169)
+texture = ExtResource("2_j82uf")
+
+[node name="PlayerHPLabel" type="Label" parent="."]
+offset_left = 123.0
+offset_top = 142.0
+offset_right = 372.0
+offset_bottom = 284.0
+
+[node name="EnemyHPLabel" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 100.0
+offset_top = 469.0
+offset_right = 1105.0
+offset_bottom = 622.0
+size_flags_horizontal = 4
+
+[node name="Attack1Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ataque básico"
+
+[node name="Attack2Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ataque cargado"
+
+[node name="HealButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Curación"
+
+[connection signal="pressed" from="HBoxContainer/Attack1Button" to="Control" method="_on_attack_1_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Attack1Button" to="Control" method="_on_ataque_básico_pressed"]
+[connection signal="pressed" from="HBoxContainer/Attack2Button" to="Control" method="_on_attack_2_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Attack2Button" to="Control" method="_on_ataque_cargado_pressed"]
+[connection signal="pressed" from="HBoxContainer/HealButton" to="Control" method="_on_heal_button_pressed"]
