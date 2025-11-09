@@ -90,6 +90,7 @@ func preparar_opciones(valor):
 	opciones = [valor]
 	while opciones.size() < 4:
 		var falsa = redondeo_preciso(valor + randf()*6 - 3)
+		falsa = max(falsa, 0.0) # Evita valores negativos
 		if !opciones.has(falsa):
 			opciones.append(falsa)
 	opciones.shuffle()
