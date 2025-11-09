@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxnlwxk4nkjq7"]
+
+[ext_resource type="Texture2D" uid="uid://cyka4f3kd0ysb" path="res://Imagenes/fondo de trivia mundo 1.jpg" id="1_7jbsx"]
+[ext_resource type="Script" uid="uid://de302j3njs2p6" path="res://Scripts/trivia.gd" id="1_13nmr"]
+
+[node name="Trivia" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_13nmr")
+
+[node name="FondoDeTriviaMundo1" type="Sprite2D" parent="Control"]
+position = Vector2(595, 352.75)
+scale = Vector2(1.9901961, 2.3170347)
+texture = ExtResource("1_7jbsx")
+
+[node name="ProblemaLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 374.0
+offset_top = 19.0
+offset_right = 874.0
+offset_bottom = 261.0
+theme_override_font_sizes/font_size = 36
+text = "Problema"
+
+[node name="TiempoLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 25.0
+offset_right = 323.0
+offset_bottom = 160.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 19.273
+offset_left = 155.0
+offset_top = 272.0
+offset_right = 174.07996
+offset_bottom = 453.75
+
+[node name="Opcion1" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Opcion2" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Opcion3" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Opcion4" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="Control/HBoxContainer/Opcion1" to="Control" method="_on_boton_exito_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion1" to="Control" method="_on_opcion_1_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion2" to="Control" method="_on_opcion_2_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion2" to="Control" method="_on_boton_fallo_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion3" to="Control" method="_on_opcion_3_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion4" to="Control" method="_on_opcion_4_pressed"]
