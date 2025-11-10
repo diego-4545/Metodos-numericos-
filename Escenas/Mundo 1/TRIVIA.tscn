@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dxnlwxk4nkjq7"]
 
-[ext_resource type="Texture2D" uid="uid://cyka4f3kd0ysb" path="res://Imagenes/fondo de trivia mundo 1.jpg" id="1_7jbsx"]
 [ext_resource type="Script" uid="uid://de302j3njs2p6" path="res://Scripts/trivia.gd" id="1_13nmr"]
+[ext_resource type="Texture2D" uid="uid://c1ui4lntj432w" path="res://Imagenes/1_az.png" id="2_13nmr"]
 
 [node name="Trivia" type="Node2D"]
 
@@ -12,10 +12,11 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_13nmr")
 
-[node name="FondoDeTriviaMundo1" type="Sprite2D" parent="Control"]
-position = Vector2(595, 352.75)
-scale = Vector2(1.9901961, 2.3170347)
-texture = ExtResource("1_7jbsx")
+[node name="1" type="Sprite2D" parent="Control"]
+show_behind_parent = true
+position = Vector2(571, 299)
+scale = Vector2(2.1024306, 2.16821)
+texture = ExtResource("2_13nmr")
 
 [node name="ProblemaLabel" type="Label" parent="Control"]
 layout_mode = 0

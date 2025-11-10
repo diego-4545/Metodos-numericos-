@@ -1,14 +1,24 @@
 extends Control
 
+
 var player_hp = 100
 var enemy_hp = 30
 var player_turn = true
+@onready var animj = $Jugador
+@onready var animm = $ManosJ
+@onready var animc = $Curar
+@onready var animz = $Enemigo
+
+
 
 func _ready():
 	# Cargar HP desde Global
 	player_hp = Global.player_hp
 	enemy_hp = Global.enemigos_hp["Mundo1_Enemigo1"]
-
+	animj.play("default")
+	animm.play("Invisible")
+	animc.play("Invisible")
+	animz.play("EnemigoD")
 
 	update_ui()
 	actualizar_botones()
@@ -54,12 +64,18 @@ func player_heal(amount):
 		update_ui()
 		player_turn = false
 		actualizar_botones()
+		check_battle_state()
 		enemy_turn()
 
 func enemy_turn():
+	animz.position += Vector2(-520, 0)
+	animz.play("AtaqueE")
 	await get_tree().create_timer(1.0).timeout
 	var dmg = 20
 	player_hp -= dmg
+	animz.position += Vector2(520, 0)
+	animz.play("EnemigoD")
+
 	update_ui()
 	check_battle_state()
 	player_turn = true
@@ -68,29 +84,58 @@ func enemy_turn():
 func check_battle_state():
 	if enemy_hp <= 0:
 		print("¡Ganaste!")
+		animz.play("MuerteE")
+
 		set_process(false)
 	elif player_hp <= 0:
 		print("Perdiste...")
 		set_process(false)
+		animj.play("Muerte")
 
 func procesar_resultado_trivia():
 	match Global.accion_pendiente:
 		"ataque1":
 			if Global.trivia_exito:
+				animj.position += Vector2(500, 0)
+				animm.position += Vector2(500, 0)
+				animj.play("Golpe")
+				animm.play("Manos Golpe")
+				
+				await get_tree().create_timer(2).timeout
 				player_attack(15)
+				animj.position += Vector2(-500, 0)
+				animm.position += Vector2(-500, 0)
+				animj.play("default")
+				animm.play("Invisible")
+				
 			else:
 				player_turn = false
 				actualizar_botones()
 				enemy_turn()  # turno enemigo si falla
 		"ataque2":
 			if Global.trivia_exito:
-				player_attack(25)
+				animj.position += Vector2(500, 0)
+				animm.position += Vector2(500, 0)
+				animj.play("Golpe")
+				animm.play("Bate")
+				
+				await get_tree().create_timer(2).timeout
+				player_attack(20)
+				animj.position += Vector2(-500, 0)
+				animm.position += Vector2(-500, 0)
+				animj.play("default")
+				animm.play("Invisible")
 			else:
 				player_turn = false
 				actualizar_botones()
 				enemy_turn()  # turno enemigo si falla		"curar":
+		"curar":
+
 			if Global.trivia_exito:
+				animc.play("Curar")
+				await get_tree().create_timer(2).timeout
 				player_heal(20)
+				animc.play("Invisible")
 			else:
 				player_turn = false
 				actualizar_botones()

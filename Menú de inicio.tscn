@@ -1,7 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://dwmvs0ums26pb"]
+[gd_scene load_steps=12 format=3 uid="uid://dwmvs0ums26pb"]
 
-[ext_resource type="Texture2D" uid="uid://bra3fh1x675go" path="res://Imagenes/fondo inicio.png" id="1_kdqfs"]
 [ext_resource type="Script" uid="uid://dmt04ww7qv0ge" path="res://Scripts/inicio.gd" id="1_y65bj"]
+[ext_resource type="Texture2D" uid="uid://c8skb4ikuuelo" path="res://Imagenes/1_rz.png" id="2_5xjve"]
+[ext_resource type="Texture2D" uid="uid://cccgoex8aw8yu" path="res://Imagenes/3.png" id="3_exv1b"]
+[ext_resource type="Texture2D" uid="uid://1jbyoqjsmquu" path="res://Imagenes/4_rz.png" id="4_2lxae"]
+[ext_resource type="Texture2D" uid="uid://cpcf0tyap4dqc" path="res://Imagenes/Layer_0001_8.png" id="5_bvvxc"]
+[ext_resource type="Texture2D" uid="uid://b6ca2kw86w50q" path="res://Imagenes/flower01.png" id="6_5xjve"]
+[ext_resource type="Texture2D" uid="uid://c53e8py2js5c7" path="res://Imagenes/flower2 copy.png" id="7_2lxae"]
+[ext_resource type="Texture2D" uid="uid://dna45n24o7ucw" path="res://Imagenes/bush.png" id="8_oyu35"]
+[ext_resource type="Texture2D" uid="uid://dw73xt17o28wd" path="res://Imagenes/tree01.png" id="9_063nq"]
 
 [sub_resource type="FontVariation" id="FontVariation_y65bj"]
 
@@ -60,13 +67,6 @@ vertical_icon_alignment = 0
 expand_icon = true
 script = SubResource("GDScript_3rg2k")
 
-[node name="FondoInicio" type="Sprite2D" parent="."]
-show_behind_parent = true
-light_mask = 3
-position = Vector2(573.75, 324.25)
-scale = Vector2(1.5013072, 1.279324)
-texture = ExtResource("1_kdqfs")
-
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -85,6 +85,108 @@ theme_override_font_sizes/font_size = 100
 text = "TITULO DEL JUEGO"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="1" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(575.5, 310)
+scale = Vector2(2.0295138, 2.117284)
+texture = ExtResource("2_5xjve")
+
+[node name="3" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(581, 393.00003)
+scale = Vector2(2.1076388, 1.5277778)
+texture = ExtResource("3_exv1b")
+
+[node name="4" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(994.99994, 67.00003)
+scale = Vector2(1.6510416, 1.2777778)
+texture = ExtResource("4_2lxae")
+flip_v = true
+
+[node name="Layer00018" type="Sprite2D" parent="."]
+modulate = Color(1.1535833, 1.8916494, 1.3778974, 1)
+show_behind_parent = true
+position = Vector2(586.99994, 240)
+scale = Vector2(1.4493535, 1.0737704)
+texture = ExtResource("5_bvvxc")
+
+[node name="Flower01" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.46018663, 0.44992498, 0.4417157, 1)
+show_behind_parent = true
+position = Vector2(-371.8899, 287.771)
+scale = Vector2(0.6899628, 0.9312978)
+texture = ExtResource("6_5xjve")
+
+[node name="Flower02" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.46018663, 0.44992498, 0.4417157, 1)
+show_behind_parent = true
+position = Vector2(208.36877, 306.39694)
+scale = Vector2(0.6899628, 0.9312978)
+texture = ExtResource("6_5xjve")
+
+[node name="Flower03" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.46018663, 0.44992498, 0.4417157, 1)
+show_behind_parent = true
+position = Vector2(-13.799225, 295.22137)
+scale = Vector2(0.6899628, 0.9312978)
+texture = ExtResource("6_5xjve")
+
+[node name="Flower04" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.46018663, 0.44992498, 0.4417157, 1)
+show_behind_parent = true
+position = Vector2(368.4402, 317.5725)
+scale = Vector2(0.6899628, 0.9312978)
+texture = ExtResource("6_5xjve")
+
+[node name="Flower2Copy" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.29523852, 0.29523852, 0.29523852, 1)
+show_behind_parent = true
+position = Vector2(-273.9152, 284.9771)
+texture = ExtResource("7_2lxae")
+
+[node name="Flower2Copy2" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.29523852, 0.29523852, 0.29523852, 1)
+show_behind_parent = true
+position = Vector2(287.02457, 273.80154)
+texture = ExtResource("7_2lxae")
+
+[node name="Bush" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.7285387, 0.7285387, 0.7285387, 1)
+show_behind_parent = true
+position = Vector2(-126.953094, 190.91605)
+scale = Vector2(0.9136616, 1.2805345)
+texture = ExtResource("8_oyu35")
+
+[node name="Bush2" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.7285387, 0.7285387, 0.7285387, 1)
+show_behind_parent = true
+position = Vector2(106.25429, 189.98474)
+scale = Vector2(0.9136616, 1.2805345)
+texture = ExtResource("8_oyu35")
+flip_h = true
+
+[node name="Tree01" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.28974354, 0.28974354, 0.28974354, 1)
+show_behind_parent = true
+position = Vector2(405.69818, 143.41986)
+scale = Vector2(1.1050185, 1.5642892)
+texture = ExtResource("9_063nq")
+
+[node name="Tree02" type="Sprite2D" parent="Layer00018"]
+modulate = Color(0.30210713, 0.30210713, 0.30210713, 1)
+show_behind_parent = true
+position = Vector2(-153.17169, 184.39694)
+scale = Vector2(0.88671, 1.2696208)
+texture = ExtResource("9_063nq")
+
+[node name="5" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(668.00006, 141)
+scale = Vector2(2.7259386, 1.6327162)
+texture = ExtResource("4_2lxae")
+flip_v = true
 
 [connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/Button2" to="." method="_on_button_2_pressed"]
