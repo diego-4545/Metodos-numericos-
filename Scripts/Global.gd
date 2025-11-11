@@ -53,14 +53,17 @@ var batalla_actual = 1
 
 # ----------------- MÉTODOS POR TEMA -----------------
 var metodos_por_tema = {
-	"Interpolacion": ["Lineal","NewtonAdelante","NewtonAtras","DiferenciasDivididas","Lagrange"]
+	"Interpolacion": ["Lineal","NewtonAdelante","NewtonAtras","DiferenciasDivididas","Lagrange"],
+	"EcuacionesNoLineales": ["Grafico", "FalsaPosicion", "PuntoFijo", "Secante"]
 }
+
 var metodos_usados = {
-	"Interpolacion": []
+	"Interpolacion": [],
+	"EcuacionesNoLineales": []
 }
 
 # ----------------- MUNDO ACTUAL -----------------
-var mundo_actual = 1
+var mundo_actual = 2
 
 # ----------------- FUNCIONES -----------------
 func obtener_metodo_sin_repetir(tema):
