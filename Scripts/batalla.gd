@@ -3,6 +3,10 @@ extends Control
 
 var player_hp = 100
 var enemy_hp = 30
+var mundo = Global.mundo_actual
+var batalla = Global.batalla_actual
+var ve = "Mundo%d_Enemigo%d" % [mundo, batalla]
+var enemy_hpt = 0
 var player_turn = true
 @onready var animj = $Jugador
 @onready var animm = $ManosJ
@@ -14,7 +18,8 @@ var player_turn = true
 func _ready():
 	# Cargar HP desde Global
 	player_hp = Global.player_hp
-	enemy_hp = Global.enemigos_hp["Mundo1_Enemigo1"]
+	enemy_hpt = Global.enemigos_hpt[ve]
+	enemy_hp = Global.enemigos_hp[ve]
 	animj.play("default")
 	animm.play("Invisible")
 	animc.play("Invisible")
@@ -35,11 +40,11 @@ func update_ui():
 		enemy_hp = 0
 	$EnemyHPBar.value = enemy_hp
 	$VidaPlayerLabel.text = "%d/100" % player_hp
-	$VidaEnemigoLabel.text = "%d/30" % enemy_hp
+	$VidaEnemigoLabel.text = "%d/%d" % [enemy_hp,enemy_hpt]
 
 	# Guardar HP en Global
 	Global.player_hp = player_hp
-	Global.enemigos_hp["Mundo1_Enemigo1"] = enemy_hp
+	Global.enemigos_hp[ve] = enemy_hp
 
 func actualizar_botones():
 	var bloqueados = not player_turn
@@ -68,27 +73,39 @@ func player_heal(amount):
 		enemy_turn()
 
 func enemy_turn():
+	check_battle_state()
+	var tree = Engine.get_main_loop() as SceneTree  # <-- SceneTree global
+
+	await tree.create_timer(2.0).timeout
 	animz.position += Vector2(-520, 0)
 	animz.play("AtaqueE")
-	await get_tree().create_timer(1.0).timeout
+
+	await tree.create_timer(1.0).timeout
 	var dmg = 20
 	player_hp -= dmg
 	animz.position += Vector2(520, 0)
 	animz.play("EnemigoD")
-
 	update_ui()
 	check_battle_state()
-	player_turn = true
-	actualizar_botones()
+
+	if player_hp > 0:
+
+		player_turn = true
+		actualizar_botones()
+
 
 func check_battle_state():
 	if enemy_hp <= 0:
 		print("¡Ganaste!")
 		animz.play("MuerteE")
-
+		await get_tree().create_timer(2).timeout
+		(Engine.get_main_loop() as SceneTree).change_scene_to_file("res://Ganaste.tscn")
 		set_process(false)
 	elif player_hp <= 0:
 		print("Perdiste...")
+		animj.play("Muerte")
+		await get_tree().create_timer(2).timeout
+		(Engine.get_main_loop() as SceneTree).change_scene_to_file("res://Perdiste.tscn")
 		set_process(false)
 		animj.play("Muerte")
 
@@ -143,15 +160,12 @@ func procesar_resultado_trivia():
 # BOTONES
 func _on_attack_1_button_pressed():
 	Global.accion_pendiente = "ataque1"
-	Global.batalla_actual = 1
 	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")
 
 func _on_attack_2_button_pressed():
 	Global.accion_pendiente = "ataque2"
-	Global.batalla_actual = 1
 	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")
 
 func _on_heal_button_pressed():
 	Global.accion_pendiente = "curar"
-	Global.batalla_actual = 1
 	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")

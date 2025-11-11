@@ -119,6 +119,7 @@ func generar_trivia():
 			respuesta_comprobacion = redondeo_preciso(y_tabla[1])
 
 	preparar_opciones(respuesta_correcta)
+	
 
 # ----------------- PREPARAR OPCIONES -----------------
 func preparar_opciones(valor):
@@ -165,6 +166,7 @@ func preparar_opciones(valor):
 			opciones.append(falsa)
 
 	opciones.shuffle()
+	
 
 	if etapa == 1:
 		label_problema.text = "Método: %s\nInterpolar f(%.2f)\n%s\n%s" % [metodo_actual, valor_a_interpolar, xs_text(), ys_text()]
@@ -180,6 +182,8 @@ func preparar_opciones(valor):
 				label_problema.text = "Método: Diferencias Divididas\nIngresa d11"
 
 	mostrar_opciones()
+	marcar_respuesta_correcta()
+
 
 # ----------------- MOSTRAR OPCIONES -----------------
 func mostrar_opciones():
@@ -210,7 +214,10 @@ func actualizar_tiempo_label():
 
 # ----------------- INTERPOLACIONES -----------------
 func interpolacion_lineal(x0, y0, x1, y1, x):
+	if is_equal_approx(x1, x0):
+		return y0  # o devolver un valor seguro
 	return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+
 
 func interpolacion_newton_adelante(xs, ys, x):
 	var n = xs.size()
@@ -309,3 +316,11 @@ func _regresar_a_batalla():
 		2: escena_batalla = "res://Escenas/Mundo 1/Batalla_2.tscn"
 		3: escena_batalla = "res://Escenas/Mundo 1/Batalla_3.tscn"
 	get_tree().change_scene_to_file(escena_batalla)
+
+
+func marcar_respuesta_correcta():
+	var correctas = [respuesta_correcta, respuesta_comprobacion]
+	
+	for b in [boton1, boton2, boton3, boton4]:
+		if b.text.to_float() in correctas:
+			b.add_theme_color_override("font_color", Color(0.10, 0.10, 0.8))  # gris claro
