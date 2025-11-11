@@ -116,7 +116,7 @@ func generar_trivia():
 			]
 			valor_a_interpolar = redondear_2(x_tabla[0] + randf() * (x_tabla[-1] - x_tabla[0]))
 			respuesta_correcta = redondeo_preciso(interpolacion_lagrange(x_tabla, y_tabla, valor_a_interpolar))
-			respuesta_comprobacion = redondeo_preciso(y_tabla[1])
+			respuesta_comprobacion = redondeo_preciso(y_tabla[0])
 
 	preparar_opciones(respuesta_correcta)
 	
@@ -177,7 +177,7 @@ func preparar_opciones(valor):
 			"NewtonAdelante", "NewtonAtras":
 				label_problema.text = "Método: %s\nIngresa s" % metodo_actual
 			"Lagrange":
-				label_problema.text = "Método: Lagrange\nIngresa el valor cuando evaluas\nla primera parte de la fórmula"
+				label_problema.text = "Método: Lagrange\nIngresa el valor de y en la tabla"
 			"DiferenciasDivididas":
 				label_problema.text = "Método: Diferencias Divididas\nIngresa d11"
 

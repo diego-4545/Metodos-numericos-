@@ -345,10 +345,10 @@ shape = SubResource("CircleShape2D_ltl5m")
 [node name="Button" type="Button" parent="Area2D/CanvasLayer"]
 visible = false
 custom_minimum_size = Vector2(200, 100)
-offset_left = 903.0
-offset_top = 147.0
-offset_right = 1103.0
-offset_bottom = 247.0
+offset_left = 946.0
+offset_top = 527.0
+offset_right = 1146.0
+offset_bottom = 627.0
 size_flags_vertical = 4
 theme_override_styles/normal = SubResource("StyleBoxFlat_ltl5m")
 text = "Selecciona para entrar
