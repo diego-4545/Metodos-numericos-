@@ -17,18 +17,15 @@ var tiempo_restante = 1800
 var etapa = 1
 var problemas_usados = []
 
-# ----------------- INICIO -----------------
 func _ready():
 	randomize()
 	generar_trivia()
 	iniciar_temporizador()
 
-# ----------------- UTILIDADES -----------------
 func redondeo_preciso(valor): return round(valor * 1e9) / 1e9
 func redondear_2(valor): return round(valor * 100) / 100.0
 func randf_range_custom(a,b): return a + randf() * (b - a)
 
-# ----------------- GENERACIÓN DE ECUACIONES -----------------
 func generar_ecuacion_aleatoria():
 	var tipo = randi() % 5
 	match tipo:
@@ -57,17 +54,14 @@ func generar_ecuacion_aleatoria():
 			return func(x): return pow(x,2) - k
 	return null
 
-# ----------------- GENERAR TRIVIA -----------------
 func generar_trivia():
 	var metodos_disponibles = Global.metodos_por_tema["EcuacionesNoLineales"]
 	var usados = Global.metodos_usados["EcuacionesNoLineales"]
 
-	# reinicia cuando ya se usaron todos
 	if usados.size() == metodos_disponibles.size():
 		Global.metodos_usados["EcuacionesNoLineales"].clear()
 		usados = []
 
-	# selecciona un método no usado
 	var metodo
 	while true:
 		metodo = metodos_disponibles[randi() % metodos_disponibles.size()]
@@ -93,7 +87,6 @@ func generar_trivia():
 	respuesta_comprobacion = resultado[1]
 	preparar_opciones(respuesta_correcta)
 
-# ----------------- MÉTODOS NUMÉRICOS -----------------
 func metodo_grafico(f):
 	var x = -3.0
 	var anterior = x
@@ -168,11 +161,9 @@ func metodo_secante(f, x0, x1, tol):
 	
 	return [redondeo_preciso(x2), redondeo_preciso(margen)]
 
-# ----------------- OPCIONES -----------------
 func preparar_opciones(valor):
 	opciones.clear()
 	if etapa == 1:
-		# Etapa 1 → raíz aproximada
 		opciones = [valor]
 		while opciones.size() < 4:
 			var falsa = valor + randf_range_custom(-2.0, 2.0)
@@ -180,7 +171,6 @@ func preparar_opciones(valor):
 			if !opciones.has(falsa):
 				opciones.append(falsa)
 	else:
-		# Etapa 2 → margen de error, variaciones muy pequeñas
 		opciones = [valor]
 		while opciones.size() < 4:
 			var variacion = randf_range_custom(-0.0005, 0.0005)
@@ -190,7 +180,6 @@ func preparar_opciones(valor):
 				opciones.append(falsa)
 	opciones.shuffle()
 	mostrar_pregunta()
-	marcar_respuesta_correcta()
 
 func mostrar_pregunta():
 	if etapa == 1:
@@ -205,7 +194,6 @@ func mostrar_opciones():
 	boton3.text = str(opciones[2])
 	boton4.text = str(opciones[3])
 
-# ----------------- RESPUESTAS -----------------
 func _on_opcion_1_pressed(): procesar_respuesta(0)
 func _on_opcion_2_pressed(): procesar_respuesta(1)
 func _on_opcion_3_pressed(): procesar_respuesta(2)
@@ -223,7 +211,6 @@ func procesar_respuesta(index):
 		Global.trivia_exito = redondeo_preciso(opciones[index]) == redondeo_preciso(respuesta_comprobacion)
 		_regresar_a_batalla()
 
-# ----------------- TEMPORIZADOR -----------------
 func iniciar_temporizador():
 	actualizar_tiempo_label()
 	temporizador_tick()
@@ -243,7 +230,6 @@ func actualizar_tiempo_label():
 	var segundos = int(tiempo_restante % 60)
 	label_tiempo.text = "Tiempo: %02d:%02d" % [minutos, segundos]
 
-# ----------------- REGRESO -----------------
 func _regresar_a_batalla():
 	var escena_batalla = ""
 	match Global.batalla_actual:
@@ -251,10 +237,3 @@ func _regresar_a_batalla():
 		2: escena_batalla = "res://Escenas/Mundo 2/Batalla_2.tscn"
 		3: escena_batalla = "res://Escenas/Mundo 2/Batalla_3.tscn"
 	get_tree().change_scene_to_file(escena_batalla)
-
-func marcar_respuesta_correcta():
-	var correctas = [respuesta_correcta, respuesta_comprobacion]
-	
-	for b in [boton1, boton2, boton3, boton4]:
-		if b.text.to_float() in correctas:
-			b.add_theme_color_override("font_color", Color(0.10, 0.10, 0.8))  # gris claro

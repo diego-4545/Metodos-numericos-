@@ -116,7 +116,7 @@ func procesar_resultado_trivia():
 				animm.play("Manos Golpe")
 				
 				await get_tree().create_timer(2).timeout
-				player_attack(15)
+				player_attack(35)
 				animj.position += Vector2(-500, 0)
 				animm.position += Vector2(-500, 0)
 				animj.play("default")
@@ -125,7 +125,7 @@ func procesar_resultado_trivia():
 			else:
 				player_turn = false
 				actualizar_botones()
-				enemy_turn()  
+				enemy_turn()   
 		"ataque2":
 			if Global.trivia_exito:
 				animj.position += Vector2(500, 0)
@@ -134,7 +134,7 @@ func procesar_resultado_trivia():
 				animm.play("Bate")
 				
 				await get_tree().create_timer(2).timeout
-				player_attack(20)
+				player_attack(40)
 				animj.position += Vector2(-500, 0)
 				animm.position += Vector2(-500, 0)
 				animj.play("default")
@@ -142,27 +142,26 @@ func procesar_resultado_trivia():
 			else:
 				player_turn = false
 				actualizar_botones()
-				enemy_turn()   
+				enemy_turn() 
 		"curar":
 
 			if Global.trivia_exito:
 				animc.play("Curar")
 				await get_tree().create_timer(2).timeout
-				player_heal(20)
+				player_heal(30)
 				animc.play("Invisible")
 			else:
 				player_turn = false
 				actualizar_botones()
 				enemy_turn()  
-
 func _on_attack_1_button_pressed():
 	Global.accion_pendiente = "ataque1"
-	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")
+	get_tree().change_scene_to_file("res://Escenas/Mundo 3/TRIVIA.tscn")
 
 func _on_attack_2_button_pressed():
 	Global.accion_pendiente = "ataque2"
-	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")
+	get_tree().change_scene_to_file("res://Escenas/Mundo 3/TRIVIA.tscn")
 
 func _on_heal_button_pressed():
 	Global.accion_pendiente = "curar"
-	get_tree().change_scene_to_file("res://Escenas/Mundo 1/TRIVIA.tscn")
+	get_tree().change_scene_to_file("res://Escenas/Mundo 3/TRIVIA.tscn")

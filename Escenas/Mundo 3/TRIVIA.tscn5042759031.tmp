@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dxnlwxk4nkjq7"]
+[gd_scene load_steps=3 format=3 uid="uid://cc0lqa02b8cmx"]
 
-[ext_resource type="Script" uid="uid://de302j3njs2p6" path="res://Scripts/trivia.gd" id="1_13nmr"]
-[ext_resource type="Texture2D" uid="uid://c1ui4lntj432w" path="res://Imagenes/1_az.png" id="2_13nmr"]
+[ext_resource type="Script" uid="uid://cwq53rghwv35a" path="res://Escenas/Mundo 3/trivia.gd" id="1_8upyq"]
+[ext_resource type="Texture2D" uid="uid://wrn7bi84hlbk" path="res://Imagenes/Clouds/Clouds 4/1.png" id="2_3ycqu"]
 
 [node name="Trivia" type="Node2D"]
 
@@ -10,13 +10,13 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_13nmr")
+script = ExtResource("1_8upyq")
 
 [node name="1" type="Sprite2D" parent="Control"]
 show_behind_parent = true
 position = Vector2(571, 299)
 scale = Vector2(2.1024306, 2.16821)
-texture = ExtResource("2_13nmr")
+texture = ExtResource("2_3ycqu")
 
 [node name="ProblemaLabel" type="Label" parent="Control"]
 layout_mode = 0
@@ -39,9 +39,11 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 19.273
 offset_left = 155.0
-offset_top = 272.0
-offset_right = 174.07996
-offset_bottom = 453.75
+offset_top = 313.0
+offset_right = 301.07996
+offset_bottom = 495.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Opcion1" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2

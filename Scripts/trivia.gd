@@ -14,15 +14,14 @@ var valor_a_interpolar = 0
 var respuesta_correcta = 0
 var respuesta_comprobacion = 0
 var opciones = []
-var tiempo_restante = 1800 # 30 minutos
-var etapa = 1 # 1 = primera pregunta, 2 = comprobación
+var tiempo_restante = 1800 
+var etapa = 1 
 
 func _ready():
 	randomize()
 	generar_trivia()
 	iniciar_temporizador()
 
-# ----------------- UTILIDADES -----------------
 func formatear_tabla(valor):
 	var s = str(round(valor * 100) / 100.0)
 	while s.length() < 10:
@@ -47,7 +46,6 @@ func ys_text():
 		s += formatear_tabla(y_tabla[i])
 	return s
 
-# ----------------- GENERAR TRIVIA -----------------
 func generar_trivia():
 	metodo_actual = Global.obtener_metodo_sin_repetir("Interpolacion")
 	etapa = 1
@@ -61,6 +59,7 @@ func generar_trivia():
 			valor_a_interpolar = redondear_2(x0 + randf() * (x1 - x0))
 			respuesta_correcta = redondeo_preciso(interpolacion_lineal(x0, y_tabla[0], x1, y_tabla[1], valor_a_interpolar))
 			respuesta_comprobacion = redondeo_preciso(log(valor_a_interpolar) - respuesta_correcta)
+			print(respuesta_comprobacion)
 
 		"NewtonAdelante":
 			x_tabla = [1, 2, 3, 4]
@@ -73,6 +72,7 @@ func generar_trivia():
 			valor_a_interpolar = redondear_2(x_tabla[0] + randf() * (x_tabla[-1] - x_tabla[0]))
 			respuesta_correcta = redondeo_preciso(interpolacion_newton_adelante(x_tabla, y_tabla, valor_a_interpolar))
 			respuesta_comprobacion = redondeo_preciso((valor_a_interpolar - x_tabla[0]) / (x_tabla[1] - x_tabla[0]))
+			print(respuesta_comprobacion)
 
 		"NewtonAtras":
 			x_tabla = [3, 4, 5, 6]
@@ -82,18 +82,16 @@ func generar_trivia():
 				redondear_2(23 + randf() * 7),
 				redondear_2(31 + randf() * 9)
 			]
-			# 🔹 Para Newton hacia atrás, interpolamos cerca del último punto
 			valor_a_interpolar = redondear_2(
 				x_tabla[x_tabla.size() - 2] + randf() * (x_tabla[x_tabla.size() - 1] - x_tabla[x_tabla.size() - 2])
 			)
-			# 🔹 Calcula la respuesta correcta
 			respuesta_correcta = redondeo_preciso(
 				interpolacion_newton_atras(x_tabla, y_tabla, valor_a_interpolar)
 			)
-			# 🔹 Verificación: u = (x - x_n) / h
 			respuesta_comprobacion = redondeo_preciso(
 				abs((valor_a_interpolar - x_tabla[x_tabla.size() - 1]) / (x_tabla[1] - x_tabla[0]))
 			)
+			print(respuesta_comprobacion)
 
 
 		"DiferenciasDivididas":
@@ -106,6 +104,7 @@ func generar_trivia():
 			valor_a_interpolar = redondear_2(x_tabla[0] + randf() * (x_tabla[-1] - x_tabla[0]))
 			respuesta_correcta = redondeo_preciso(interpolacion_diferencias_divididas(x_tabla, y_tabla, valor_a_interpolar))
 			respuesta_comprobacion = redondeo_preciso((y_tabla[1] - y_tabla[0]) / (x_tabla[1] - x_tabla[0]))
+			print(respuesta_comprobacion)
 
 		"Lagrange":
 			x_tabla = [2, 3, 6]
@@ -117,14 +116,13 @@ func generar_trivia():
 			valor_a_interpolar = redondear_2(x_tabla[0] + randf() * (x_tabla[-1] - x_tabla[0]))
 			respuesta_correcta = redondeo_preciso(interpolacion_lagrange(x_tabla, y_tabla, valor_a_interpolar))
 			respuesta_comprobacion = redondeo_preciso(y_tabla[0])
+			print(respuesta_comprobacion)
 
 	preparar_opciones(respuesta_correcta)
 	
 
-# ----------------- PREPARAR OPCIONES -----------------
 func preparar_opciones(valor):
 	
-	# Evita valores no numéricos o nulos
 	if typeof(valor) != TYPE_FLOAT and typeof(valor) != TYPE_INT:
 		valor = 0.0
 	if is_nan(valor):
@@ -145,20 +143,17 @@ func preparar_opciones(valor):
 		var delta = randf_range(-3.0, 3.0)
 		var falsa = valor + delta
 		if falsa < 0 or is_nan(falsa):
-			continue  # evita negativos o NaN
+			continue  
 
-		# Redondear al mismo número de decimales que la correcta (máximo 9)
 		decimales = min(decimales, 9)
 		falsa = round(falsa * pow(10, decimales)) / pow(10, decimales)
 
-		# Calcular cantidad de dígitos enteros de la falsa
 		var texto_falsa = str(falsa)
 		var partes_falsa = texto_falsa.split(".")
 		var enteros_falsa = 1
 		if partes_falsa.size() > 0 and partes_falsa[0] != "":
 			enteros_falsa = partes_falsa[0].length()
 
-		# Evitar números con distinta longitud entera
 		if enteros_falsa != enteros:
 			continue
 
@@ -182,17 +177,13 @@ func preparar_opciones(valor):
 				label_problema.text = "Método: Diferencias Divididas\nIngresa d11"
 
 	mostrar_opciones()
-	marcar_respuesta_correcta()
 
-
-# ----------------- MOSTRAR OPCIONES -----------------
 func mostrar_opciones():
 	boton1.text = str(opciones[0])
 	boton2.text = str(opciones[1])
 	boton3.text = str(opciones[2])
 	boton4.text = str(opciones[3])
 
-# ----------------- TEMPORIZADOR -----------------
 func iniciar_temporizador():
 	actualizar_tiempo_label()
 	temporizador_tick()
@@ -212,10 +203,9 @@ func actualizar_tiempo_label():
 	var segundos = int(tiempo_restante % 60)
 	label_tiempo.text = "Tiempo: %02d:%02d" % [minutos, segundos]
 
-# ----------------- INTERPOLACIONES -----------------
 func interpolacion_lineal(x0, y0, x1, y1, x):
 	if is_equal_approx(x1, x0):
-		return y0  # o devolver un valor seguro
+		return y0   
 	return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
 
 
@@ -234,6 +224,7 @@ func interpolacion_newton_adelante(xs, ys, x):
 	for i in range(1, n):
 		mult *= (u - (i - 1))
 		result += (mult * dif[0][i]) / factorial(i)
+	print (result)
 	return result
 
 func interpolacion_newton_atras(xs, ys, x):
@@ -251,6 +242,7 @@ func interpolacion_newton_atras(xs, ys, x):
 	for i in range(1, n):
 		mult *= (u + (i - 1))
 		result += (mult * dif[n - i - 1][i]) / factorial(i)
+	print (result)
 	return result
 
 func interpolacion_diferencias_divididas(xs, ys, x):
@@ -267,6 +259,7 @@ func interpolacion_diferencias_divididas(xs, ys, x):
 		for j in range(i):
 			mult *= (x - xs[j])
 		result += mult * dif[0][i]
+	print (result)
 	return result
 
 func interpolacion_lagrange(xs, ys, x):
@@ -278,22 +271,20 @@ func interpolacion_lagrange(xs, ys, x):
 			if i != j:
 				li *= (x - xs[j]) / (xs[i] - xs[j])
 		result += li * ys[i]
+	print (result)
 	return result
 
-# ----------------- FACTORIAL -----------------
 func factorial(n: int) -> int:
 	var result = 1
 	for i in range(2, n + 1):
 		result *= i
 	return result
 
-# ----------------- BOTONES -----------------
 func _on_opcion_1_pressed(): procesar_respuesta(0)
 func _on_opcion_2_pressed(): procesar_respuesta(1)
 func _on_opcion_3_pressed(): procesar_respuesta(2)
 func _on_opcion_4_pressed(): procesar_respuesta(3)
 
-# ----------------- PROCESAR RESPUESTA -----------------
 func procesar_respuesta(index):
 	if etapa == 1:
 		if redondeo_preciso(opciones[index]) == redondeo_preciso(respuesta_correcta):
@@ -316,11 +307,3 @@ func _regresar_a_batalla():
 		2: escena_batalla = "res://Escenas/Mundo 1/Batalla_2.tscn"
 		3: escena_batalla = "res://Escenas/Mundo 1/Batalla_3.tscn"
 	get_tree().change_scene_to_file(escena_batalla)
-
-
-func marcar_respuesta_correcta():
-	var correctas = [respuesta_correcta, respuesta_comprobacion]
-	
-	for b in [boton1, boton2, boton3, boton4]:
-		if b.text.to_float() in correctas:
-			b.add_theme_color_override("font_color", Color(0.10, 0.10, 0.8))  # gris claro

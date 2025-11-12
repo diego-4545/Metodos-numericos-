@@ -1,10 +1,8 @@
 extends Node
 
-# ----------------- ACCIÓN Y RESULTADO -----------------
-var accion_pendiente = null  # "ataque1", "ataque2", "curar"
+var accion_pendiente = null   
 var trivia_exito = false
 
-# ----------------- VIDA DEL JUGADOR Y ENEMIGOS -----------------
 var player_hp = 100
 var enemigos_hp = {
 	"Mundo1_Enemigo1": 30,
@@ -48,24 +46,22 @@ var enemigos_hpt = {
 	"Mundo6_Enemigo3": 200
 }
 
-# ----------------- BATALLA ACTUAL -----------------
 var batalla_actual = 1
 
-# ----------------- MÉTODOS POR TEMA -----------------
 var metodos_por_tema = {
 	"Interpolacion": ["Lineal","NewtonAdelante","NewtonAtras","DiferenciasDivididas","Lagrange"],
-	"EcuacionesNoLineales": ["Grafico", "FalsaPosicion", "PuntoFijo", "Secante"]
+	"EcuacionesNoLineales": ["Grafico", "FalsaPosicion", "PuntoFijo", "Secante"],
+	"SistemasLineales": ["EliminacionGaussiana", "GaussJordan", "Montante", "Jacobi", "GaussSeidel"]
 }
 
 var metodos_usados = {
 	"Interpolacion": [],
-	"EcuacionesNoLineales": []
+	"EcuacionesNoLineales": [],
+	"SistemasLineales": []
 }
 
-# ----------------- MUNDO ACTUAL -----------------
-var mundo_actual = 2
+var mundo_actual = 3
 
-# ----------------- FUNCIONES -----------------
 func obtener_metodo_sin_repetir(tema):
 	var disponibles = []
 	for m in metodos_por_tema[tema]:
@@ -79,7 +75,6 @@ func obtener_metodo_sin_repetir(tema):
 	metodos_usados[tema].append(metodo)
 	return metodo
 
-# ----------------- GUARDAR Y CARGAR -----------------
 func guardar_global():
 	var datos = {
 		"player_hp": player_hp,
@@ -91,7 +86,7 @@ func guardar_global():
 
 	var file = FileAccess.open("user://savegame.json", FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(datos))  # stringify sigue siendo estático
+		file.store_string(JSON.stringify(datos)) 
 		file.close()
 		print("Juego guardado!")
 
@@ -102,10 +97,10 @@ func cargar_global():
 			var json_string = file.get_as_text()
 			file.close()
 			
-			var json = JSON.new()          # <-- crear instancia de JSON
+			var json = JSON.new()         
 			var result = json.parse(json_string)
 			if result == OK:
-				var datos = json.get_data()  # obtiene el diccionario
+				var datos = json.get_data() 
 				player_hp = datos.get("player_hp", 100)
 				enemigos_hp = datos.get("enemigos_hp", enemigos_hp)
 				batalla_actual = datos.get("batalla_actual", 1)

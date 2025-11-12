@@ -16,7 +16,7 @@ var player_turn = true
 
 
 func _ready():
-	# Cargar HP desde Global
+
 	player_hp = Global.player_hp
 	enemy_hpt = Global.enemigos_hpt[ve]
 	enemy_hp = Global.enemigos_hp[ve]
@@ -28,7 +28,6 @@ func _ready():
 	update_ui()
 	actualizar_botones()
 
-	# Si venimos de TRIVIA, procesar la acción pendiente
 	if Global.accion_pendiente != "":
 		procesar_resultado_trivia()
 		Global.accion_pendiente = ""
@@ -42,7 +41,6 @@ func update_ui():
 	$VidaPlayerLabel.text = "%d/100" % player_hp
 	$VidaEnemigoLabel.text = "%d/%d" % [enemy_hp,enemy_hpt]
 
-	# Guardar HP en Global
 	Global.player_hp = player_hp
 	Global.enemigos_hp[ve] = enemy_hp
 
@@ -74,7 +72,7 @@ func player_heal(amount):
 
 func enemy_turn():
 	check_battle_state()
-	var tree = Engine.get_main_loop() as SceneTree  # <-- SceneTree global
+	var tree = Engine.get_main_loop() as SceneTree   
 
 	await tree.create_timer(2.0).timeout
 	animz.position += Vector2(-520, 0)
@@ -128,7 +126,7 @@ func procesar_resultado_trivia():
 			else:
 				player_turn = false
 				actualizar_botones()
-				enemy_turn()  # turno enemigo si falla
+				enemy_turn()  
 		"ataque2":
 			if Global.trivia_exito:
 				animj.position += Vector2(500, 0)
@@ -145,7 +143,7 @@ func procesar_resultado_trivia():
 			else:
 				player_turn = false
 				actualizar_botones()
-				enemy_turn()  # turno enemigo si falla		"curar":
+				enemy_turn() 
 		"curar":
 
 			if Global.trivia_exito:
@@ -156,8 +154,7 @@ func procesar_resultado_trivia():
 			else:
 				player_turn = false
 				actualizar_botones()
-				enemy_turn()  # turno enemigo si falla
-# BOTONES
+				enemy_turn() 
 func _on_attack_1_button_pressed():
 	Global.accion_pendiente = "ataque1"
 	get_tree().change_scene_to_file("res://Escenas/Mundo 2/TRIVIA.tscn")
