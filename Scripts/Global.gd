@@ -51,16 +51,18 @@ var batalla_actual = 1
 var metodos_por_tema = {
 	"Interpolacion": ["Lineal","NewtonAdelante","NewtonAtras","DiferenciasDivididas","Lagrange"],
 	"EcuacionesNoLineales": ["Grafico", "FalsaPosicion", "PuntoFijo", "Secante"],
-	"SistemasLineales": ["EliminacionGaussiana", "GaussJordan", "Montante", "Jacobi", "GaussSeidel"]
+	"SistemasLineales": ["EliminacionGaussiana", "GaussJordan", "Montante", "Jacobi", "GaussSeidel"],
+	"MinimosCuadrados": ["Recta","Cuadrática","Cúbica","LinealFunción","CuadraticaFunción"]
 }
 
 var metodos_usados = {
 	"Interpolacion": [],
 	"EcuacionesNoLineales": [],
-	"SistemasLineales": []
+	"SistemasLineales": [],
+	"MinimosCuadrados": []
 }
 
-var mundo_actual = 3
+var mundo_actual = 5
 
 func obtener_metodo_sin_repetir(tema):
 	var disponibles = []
