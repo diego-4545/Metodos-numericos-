@@ -362,7 +362,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gmmg1")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_n87rx")
 }],
 "loop": true,
@@ -619,7 +619,7 @@ region = Rect2(40, 0, 10, 16)
 [sub_resource type="SpriteFrames" id="SpriteFrames_nrqbe"]
 animations = [{
 "frames": [{
-"duration": 1.0,
+"duration": 1.31,
 "texture": SubResource("AtlasTexture_gxuq2")
 }, {
 "duration": 1.0,
@@ -791,7 +791,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_chsfm")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_omxuc")
 }],
 "loop": true,
@@ -1963,7 +1963,7 @@ texture_filter = 1
 position = Vector2(812.99994, -414.99997)
 scale = Vector2(14.400001, 14.740387)
 sprite_frames = SubResource("SpriteFrames_nrqbe")
-animation = &"AtaqueE"
+animation = &"MuerteE"
 offset = Vector2(10, 50)
 
 [node name="ManosJ" type="AnimatedSprite2D" parent="Control"]
@@ -2073,8 +2073,8 @@ scale = Vector2(0.99999994, 1)
 texture = ExtResource("27_5vr1k")
 flip_v = true
 
-[connection signal="pressed" from="Control/HBoxContainer/Attack1Button" to="Control" method="_on_attack_1_button_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Attack1Button" to="Control" method="_on_ataque_básico_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Attack1Button" to="Control" method="_on_attack_1_button_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Attack2Button" to="Control" method="_on_ataque_cargado_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Attack2Button" to="Control" method="_on_attack_2_button_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/HealButton" to="Control" method="_on_heal_button_pressed"]

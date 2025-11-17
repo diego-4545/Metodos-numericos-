@@ -110,12 +110,14 @@ func procesar_resultado_trivia():
 	match Global.accion_pendiente:
 		"ataque1":
 			if Global.trivia_exito:
+				player_turn = false
 				animj.position += Vector2(500, 0)
 				animm.position += Vector2(500, 0)
 				animj.play("Golpe")
 				animm.play("Manos Golpe")
 				
 				await get_tree().create_timer(2).timeout
+				player_turn = true
 				player_attack(55)
 				animj.position += Vector2(-500, 0)
 				animm.position += Vector2(-500, 0)
@@ -128,12 +130,14 @@ func procesar_resultado_trivia():
 				enemy_turn()   
 		"ataque2":
 			if Global.trivia_exito:
+				player_turn = false
 				animj.position += Vector2(500, 0)
 				animm.position += Vector2(500, 0)
 				animj.play("Golpe")
 				animm.play("Bate")
 				
 				await get_tree().create_timer(2).timeout
+				player_turn = true
 				player_attack(60)
 				animj.position += Vector2(-500, 0)
 				animm.position += Vector2(-500, 0)
@@ -146,8 +150,10 @@ func procesar_resultado_trivia():
 		"curar":
 
 			if Global.trivia_exito:
+				player_turn = false
 				animc.play("Curar")
 				await get_tree().create_timer(2).timeout
+				player_turn = true
 				player_heal(40)
 				animc.play("Invisible")
 			else:

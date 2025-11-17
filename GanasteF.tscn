@@ -1,0 +1,71 @@
+[gd_scene load_steps=4 format=3 uid="uid://bu63xiqbitv7h"]
+
+[ext_resource type="Script" uid="uid://dirrwdcx8xm4w" path="res://ganaste_f.gd" id="1_uej2x"]
+[ext_resource type="Texture2D" uid="uid://c8skb4ikuuelo" path="res://Imagenes/1_rz.png" id="2_1trop"]
+
+[sub_resource type="FontVariation" id="FontVariation_atc60"]
+
+[node name="Ganaste" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uej2x")
+
+[node name="HBoxContainer2" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 67.0
+offset_top = 235.0
+offset_right = 1084.0
+offset_bottom = 696.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+vertical = true
+
+[node name="Button" type="Button" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("FontVariation_atc60")
+theme_override_font_sizes/font_size = 70
+text = "Reintentar Jefe Final"
+vertical_icon_alignment = 0
+expand_icon = true
+
+[node name="Button2" type="Button" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 70
+text = "Salir"
+vertical_icon_alignment = 0
+expand_icon = true
+
+[node name="1" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(575.5, 310)
+scale = Vector2(2.0295138, 2.117284)
+texture = ExtResource("2_1trop")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -104.0
+offset_top = -49.0
+offset_right = 1237.0
+offset_bottom = 258.125
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 80
+text = "FELICIDADES
+Lograste completar el juego"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="HBoxContainer2/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="HBoxContainer2/Button2" to="." method="_on_button_2_pressed"]

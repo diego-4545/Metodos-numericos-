@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://dukbh111vkuhw"]
+
+[ext_resource type="Script" uid="uid://den5o2gasj80u" path="res://Escenas/visiblepausa.gd" id="1_s7fsu"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+script = ExtResource("1_s7fsu")
+
+[node name="Panel" type="HBoxContainer" parent="."]
+offset_left = 709.0
+offset_right = 1150.0
+offset_bottom = 130.0
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 27
+text = "Menú de Inicio"
+
+[node name="Button2" type="Button" parent="Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 29
+text = "Salir"
+
+[connection signal="pressed" from="Panel/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Panel/Button2" to="." method="_on_button_2_pressed"]

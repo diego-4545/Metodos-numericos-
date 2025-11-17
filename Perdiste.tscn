@@ -29,7 +29,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = SubResource("FontVariation_atc60")
 theme_override_font_sizes/font_size = 70
-text = "Continuar"
+text = "Reintentar"
 vertical_icon_alignment = 0
 expand_icon = true
 

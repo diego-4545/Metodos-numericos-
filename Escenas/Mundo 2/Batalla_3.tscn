@@ -354,7 +354,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gmmg1")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_n87rx")
 }],
 "loop": true,
@@ -362,7 +362,7 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 1.31,
 "texture": SubResource("AtlasTexture_prbt6")
 }, {
 "duration": 1.0,
@@ -377,7 +377,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_3wlop")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_6bqsj")
 }],
 "loop": true,
@@ -1284,7 +1284,7 @@ texture_filter = 1
 position = Vector2(136, 169)
 scale = Vector2(14.400001, 12.062503)
 sprite_frames = SubResource("SpriteFrames_4myy0")
-animation = &"Muerte"
+animation = &"MuerteE"
 offset = Vector2(10, 15)
 
 [node name="Enemigo" type="AnimatedSprite2D" parent="Control"]

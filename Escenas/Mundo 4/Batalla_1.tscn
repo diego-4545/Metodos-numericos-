@@ -232,7 +232,7 @@ region = Rect2(40, 0, 10, 16)
 [sub_resource type="SpriteFrames" id="SpriteFrames_4myy0"]
 animations = [{
 "frames": [{
-"duration": 1.0,
+"duration": 1.31,
 "texture": SubResource("AtlasTexture_gxuq2")
 }, {
 "duration": 1.0,
@@ -381,7 +381,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ccygo")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_15r1q")
 }],
 "loop": true,
@@ -404,7 +404,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_chsfm")
 }, {
-"duration": 1.0,
+"duration": 100.0,
 "texture": SubResource("AtlasTexture_omxuc")
 }],
 "loop": true,
@@ -2199,8 +2199,7 @@ texture_filter = 1
 position = Vector2(812.99994, -414.99997)
 scale = Vector2(14.400001, 14.740387)
 sprite_frames = SubResource("SpriteFrames_4myy0")
-animation = &"AtaqueE"
-frame_progress = 0.34186992
+animation = &"MuerteE"
 offset = Vector2(10, 50)
 
 [node name="ManosJ" type="AnimatedSprite2D" parent="Control"]

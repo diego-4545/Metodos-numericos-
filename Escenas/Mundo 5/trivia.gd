@@ -8,327 +8,283 @@ extends Control
 @onready var label_tiempo = $TiempoLabel
 
 var metodo_actual = ""
-var modelo_texto = ""
-var x_vals = []
-var y_vals = []
-var true_coefs = []        
-var coefs_est = []         
+var funcion_texto = ""
+var coefs = []                   
+var a = 0                        
+var b = 1
+var n = 3                       
 var opciones = []
-var respuesta_correcta = null    
-var respuesta_comprobacion = null
-var tiempo_restante = 3000
+var respuesta_correcta = ""     
+var h_correcto = 0.0             
 var etapa = 1
+var tiempo_restante = 1800
 
 func _ready():
 	randomize()
-	if not "metodos_por_tema" in Global:
-		Global.metodos_por_tema = {}
-	if not "metodos_usados" in Global:
-		Global.metodos_usados = {}
-	if not "MinimosCuadrados" in Global.metodos_por_tema:
-		Global.metodos_por_tema["MinimosCuadrados"] = ["Recta","Cuadratica","Cubica","LinealFuncion","CuadraticaFuncion"]
-	if not "MinimosCuadrados" in Global.metodos_usados:
-		Global.metodos_usados["MinimosCuadrados"] = []
-
 	generar_trivia()
 	iniciar_temporizador()
-
-func redondeo_n(valor):
-	return round(valor * 1e9) / 1e9
 
 func fmt9(v):
 	return "%.9f" % v
 
+func fmt1(v):
+	return "%.1f" % v
+
+func redondeo_2dec(v):
+	return round(v * 100.0) / 100.0
+
 func randf_range(a,b):
 	return a + randf() * (b - a)
 
-func generar_tabla():
-	var n = 5
-	x_vals.clear()
-	y_vals.clear()
+func generar_polinomio():
+	var grado = 1 + randi() % 3    
+	coefs.clear()
+	for i in range(grado + 1):
+		var c = randf_range(-3.0, 3.0)
+		if i == grado and abs(c) < 1e-6:
+			c = 1.0
+		coefs.append(redondeo_2dec(c))
+	funcion_texto = polinomio_a_texto(coefs)
 
-	for i in range(n):
-		var xv = randf_range(1.0, 15.0)
-		xv = snappedf(xv, 0.1)  
-		x_vals.append(xv)
+func polinomio_a_texto(cfs):
+	var parts = []
+	for i in range(cfs.size() - 1, -1, -1):
+		var c = cfs[i]
+		if abs(c) < 1e-12:
+			continue
+		var sval = "%.2f" % abs(c)
+		var term = ""
+		if i == 0:
+			term = "%s" % sval
+		elif i == 1:
+			term = "%s*x" % sval
+		else:
+			term = "%s*x^%d" % [sval, i]
+		if c < 0:
+			parts.append("- " + term)
+		else:
+			parts.append("+ " + term)
+	if parts.size() == 0:
+		return "0"
+	var first = parts[0]
+	if first.begins_with("+ "):
+		first = first.substr(2, first.length() - 2)
+	parts[0] = first
+	return " ".join(parts)
 
-		var yv = randf_range(1.0, 10.0)
-		yv = snappedf(yv, 0.1)   
-		y_vals.append(yv)
+func evaluar_polinomio(x):
+	var s = 0.0
+	for i in range(coefs.size()):
+		s += coefs[i] * pow(x, i)
+	return s
 
-	return n
+func f_eval(x):
+	return evaluar_polinomio(x)
 
-func modelo_recta(x, coefs): return coefs[0] + coefs[1]*x
-func modelo_cuadratica(x, coefs): return coefs[0] + coefs[1]*x + coefs[2]*x*x
-func modelo_cubica(x, coefs): return coefs[0] + coefs[1]*x + coefs[2]*x*x + coefs[3]*x*x*x
-func modelo_lineal_func(x, coefs): return coefs[0] + coefs[1]*x + coefs[2]*_eval_func(coefs[3], x)
-func modelo_cuadratica_func(x, coefs): return coefs[0] + coefs[1]*x + coefs[2]*x*x + coefs[3]*_eval_func(coefs[4], x)
+func integral_exacta(cfs, A, B):
+	var s = 0.0
+	for i in range(cfs.size()):
+		s += cfs[i] * (pow(B, i + 1) - pow(A, i + 1)) / float(i + 1)
+	return s
 
-func _eval_func(func_id, x):
-	if func_id == 0:
-		return sin(x)
-	elif func_id == 1:
-		return cos(x)
+var pesos_cerrados = {
+	3: [1.0, 3.0, 3.0, 1.0],                     
+	4: [7.0,32.0,12.0,32.0,7.0],                 
+	5: [19.0,75.0,50.0,50.0,75.0,19.0],        
+	6: [41.0,216.0,27.0,272.0,27.0,216.0,41.0]  
+}
+var alpha_cerrado = {
+	3: 3.0/8.0,
+	4: 2.0/45.0,
+	5: 5.0/288.0,
+	6: 1.0/140.0
+}
+
+var pesos_abiertos = {
+	3: [0.0, 11.0, 1.0, 1.0, 11.0, 0.0],  
+	4: [0.0, 11.0, -14.0, 26.0, -14.0, 11.0, 0.0],  
+	5: [0.0, 611.0, -453.0, 562.0,562.0, -453.0, 611.0, 0.0],
+	6: [0.0, 460.0, -954.0, 2196.0, -2459.0, 2196.0, -954.0, 460.0, 0.0], 
+
+}
+var alpha_abierto = {
+	3: 5.0/24.0,   
+	4: 6.0/20.0,   
+	5: 7.0/1440.0,
+	6: 8.0/945.0
+}
+
+
+func regla_cerrada_general(A, B, n_local):
+	var h = float(B - A) / n_local
+	h_correcto = h
+	var pesos = pesos_cerrados.get(n_local, null)
+	var alpha = alpha_cerrado.get(n_local, 0.0)
+	if pesos == null:
+		return 0.0
+	var suma = 0.0
+	for i in range(n_local + 1):
+		var xi = A + i * h
+		suma += pesos[i] * f_eval(xi)
+	return alpha * h * suma
+
+func regla_trapecio_compuesta(A, B, n_local):
+	var h = float(B - A) / n_local
+	h_correcto = h
+	var suma = 0.0
+	for i in range(1, n_local):
+		var xi = A + i * h
+		suma += 2.0 * f_eval(xi)
+	suma += f_eval(A) + f_eval(B)
+	return (h / 2.0) * suma
+
+
+func regla_simpson38_compuesta(A, B, n_local):
+	var h = float(B - A) / n_local
+	h_correcto = h
+	var suma = 0.0
+	for i in range(1, n_local):
+		var xi = A + i * h
+		suma += 3.0 * f_eval(xi)
+	suma += f_eval(A) + f_eval(B)
+	return (3*h / 8.0) * suma
+
+
+func regla_abierta_general(A, B, n_local):
+	var h_open = float(B - A) / (n_local + 2)
+	h_correcto = h_open
+	var pesos = pesos_abiertos.get(n_local, null)
+	var alpha = alpha_abierto.get(n_local, null)
+	if pesos != null and alpha != null:
+		var msize = pesos.size()
+		var need = n_local + 1
+		var start = int((msize - need) / 2)
+		if start < 0:
+			start = 0
+		var suma = 0.0
+		for k in range(need):
+			var coeff = pesos[start + k]
+			var xi = A + (k + 1) * h_open  
+			suma += coeff * f_eval(xi)
+		return alpha * h_open * suma
 	else:
-		var c = cos(x)
-		if abs(c) < 1e-3:
-			return tan(x) * 0.5
-		return tan(x)
+		var suma = 0.0
+		for k in range(1, n_local + 2):
+			var xi = A + k * h_open
+			suma += f_eval(xi)
+		h_correcto = h_open
+		return h_open * suma * 1.0
 
-func construir_disenio_y(modo):
-	var X = []
-
-	for i in range(x_vals.size()):
-		var x = x_vals[i]
-		var row = []
-
-		match modo:
-			"Recta":
-				row = [1.0, x]
-			"Cuadrática":
-				row = [1.0, x, x*x]
-			"Cúbica":
-				row = [1.0, x, x*x, x*x*x]
-			"LinealFunción":
-				row = [1.0, x, _eval_func(true_coefs[3], x)]
-			"CuadraticaFunción":
-				row = [1.0, x, x*x, _eval_func(true_coefs[4], x)]
-		X.append(row)
-	return X
-
-func minimos_cuadrados(X, y):
-	var m = X.size()
-	if m == 0: return []
-	var p = X[0].size()
-	var XT_X = []
-	for i in range(p):
-		XT_X.append([])
-		for j in range(p):
-			var s = 0.0
-			for k in range(m):
-				s += X[k][i] * X[k][j]
-			XT_X[i].append(s)
-	var XT_y = []
-	for i in range(p):
-		var s2 = 0.0
-		for k in range(m):
-			s2 += X[k][i] * y[k]
-		XT_y.append(s2)
-	return gaussian_solve(XT_X, XT_y)
-
-func gaussian_solve(A_in,b_in):
-	var n = A_in.size()
-	var A = []
-	for i in range(n):
-		A.append([])
-		for j in range(n):
-			A[i].append(float(A_in[i][j]))
-	var b = []
-	for i in range(n):
-		b.append(float(b_in[i]))
-
-	for k in range(n):
-		var maxrow = k
-		var maxval = abs(A[k][k])
-		for i in range(k+1, n):
-			if abs(A[i][k]) > maxval:
-				maxval = abs(A[i][k])
-				maxrow = i
-		if maxval < 1e-12:
-			var zeros = []
-			for i in range(n): zeros.append(0.0)
-			return zeros
-		if maxrow != k:
-			var tmp = A[k]; A[k] = A[maxrow]; A[maxrow] = tmp
-			var tmpb = b[k]; b[k] = b[maxrow]; b[maxrow] = tmpb
-		for i in range(k+1,n):
-			var factor = A[i][k]/A[k][k]
-			for j in range(k,n):
-				A[i][j] -= factor*A[k][j]
-			b[i] -= factor*b[k]
-
-	var x = []
-	for i in range(n):
-		x.append(0.0)
-	for i in range(n-1,-1,-1):
-		var s = b[i]
-		for j in range(i+1,n):
-			s -= A[i][j]*x[j]
-		x[i] = s/A[i][i]
-	return x
+func regla_simpson13_compuesta(A, B, n_local):
+	if n_local % 2 != 0:
+		n_local += 1
+	var h = float(B - A) / n_local
+	h_correcto = h
+	var suma = f_eval(A) + f_eval(B)
+	for i in range(1, n_local):
+		var xi = A + i * h
+		if i % 2 == 0:
+			suma += 2 * f_eval(xi)
+		else:
+			suma += 4 * f_eval(xi)
+	return (h / 3.0) * suma
 
 func generar_trivia():
 	etapa = 1
 	opciones.clear()
-	var metodos_disponibles = Global.metodos_por_tema["MinimosCuadrados"]
-	var usados = Global.metodos_usados.get("MinimosCuadrados",[])
-	if usados.size() == metodos_disponibles.size():
-		Global.metodos_usados["MinimosCuadrados"] = []
-		usados = []
+	h_correcto = 0.0
 
-	while true:
-		var metodo = metodos_disponibles[randi() % metodos_disponibles.size()]
-		if not metodo in Global.metodos_usados["MinimosCuadrados"]:
-			Global.metodos_usados["MinimosCuadrados"].append(metodo)
-			metodo_actual = metodo
-			break
+	var tema = "Integrales"   
+	var disponibles = []
+	for m in Global.metodos_por_tema[tema]:
+		if not Global.metodos_usados[tema].has(m):
+			disponibles.append(m)
+	if disponibles.size() == 0:
+		Global.metodos_usados[tema].clear()
+		disponibles = Global.metodos_por_tema[tema].duplicate()
+	
+	metodo_actual = disponibles[randi() % disponibles.size()]
+	Global.metodos_usados[tema].append(metodo_actual)
+	generar_polinomio()
 
-	generar_tabla()
+	# -----------------------------
+	# n según método
+	# -----------------------------
+	if metodo_actual == "Simpson1/3":
+		n = 2 + 2 * randi() % 3  
+	elif metodo_actual == "Simpson3/8":
+		n = 3 + randi() % 3     
+		n += (3 - (n % 3)) % 3   
+	else:
+		n = 3 + randi() % 4    
 
+	a = randi() % 6
+	b = a + 1
+
+	var approx = 0.0
 	match metodo_actual:
-		"Recta":
-			modelo_texto = ""
-			true_coefs = [randf_range(-2.0,2.0),randf_range(-2.0,2.0)]
-		"Cuadrática":
-			modelo_texto = ""
-			true_coefs = [randf_range(-2.0,2.0),randf_range(-2.0,2.0),randf_range(-1.5,1.5)]
-		"Cúbica":
-			modelo_texto = ""
-			true_coefs = [randf_range(-1.5,1.5),randf_range(-1.5,1.5),randf_range(-1.0,1.0),randf_range(-0.5,0.5)]
-		"LinealFunción":
-			var func_id = randi()%3
-			var fname = "sin" if func_id==0 else "cos" if func_id==1 else "tan"
-			modelo_texto = "%s(x)" % fname
-			true_coefs = [randf_range(-2.0,2.0),randf_range(-2.0,2.0),randf_range(-2.0,2.0),func_id]
-		"CuadraticaFunción":
-			var func_id = randi()%3
-			var fname = "sin" if func_id==0 else "cos" if func_id==1 else "tan"
-			modelo_texto = "%s(x)" % fname
-			true_coefs = [randf_range(-2.0,2.0),randf_range(-2.0,2.0),randf_range(-1.5,1.5),randf_range(-2.0,2.0),func_id]
+		"Trapecio":
+			approx = regla_trapecio_compuesta(a, b, n)
+		"Simpson1/3":
+			approx = regla_simpson13_compuesta(a, b, n)
+		"Simpson3/8":
+			approx = regla_simpson38_compuesta(a, b, n)
+		"Newton-CotesCerrados":
+			approx = regla_cerrada_general(a, b, n)
+		"Newton-CotesAbiertos":
+			approx = regla_abierta_general(a, b, n)
 
-	var X = construir_disenio_y(metodo_actual)
-	coefs_est = minimos_cuadrados(X, y_vals)
-	for i in range(coefs_est.size()): coefs_est[i] = redondeo_n(coefs_est[i])
+	respuesta_correcta = fmt9(approx)
 
-	print("\n--- Minimos Cuadrados ---")
-	print("Metodo:", metodo_actual)
-	print("Modelo:", modelo_texto)
-	print("Puntos (x,y):")
-	for i in range(x_vals.size()):
-		print("  x=%.6f  y=%.6f" % [x_vals[i], y_vals[i]])
-	print("Coef estimados:", coefs_est)
-	print("Coef true:", true_coefs)
-
-	var p = coefs_est.size()
-	var idx1 = []
-	var idx2 = []
-	if p==2:
-		idx1=[0]; idx2=[1]
-	elif p==3:
-		idx1=[0]; idx2=[1,2]
-	elif p==4:
-		idx1=[0,1]; idx2=[2,3]
-	else:
-		var half=int(p/2)
-		for i in range(half): idx1.append(i)
-		for i in range(half,p): idx2.append(i)
-
-	if idx1.size()==1:
-		respuesta_correcta = coefs_est[idx1[0]]
-	else:
-		var parts=[]; for i in idx1: parts.append(fmt9(coefs_est[i]))
-		respuesta_correcta = ", ".join(parts)
-	var parts2=[]; for i in idx2: parts2.append(fmt9(coefs_est[i]))
-	respuesta_comprobacion = ", ".join(parts2)
-
-	print("Etapa1 correcta:", respuesta_correcta)
-	print("Etapa2 correcta:", respuesta_comprobacion)
-
-	preparar_opciones()
-
-func preparar_opciones():
-	opciones.clear()
-	if etapa==1:
-		if typeof(respuesta_correcta)==TYPE_STRING:
-			opciones.append(respuesta_correcta)
-			while opciones.size()<4:
-				var comps=respuesta_correcta.split(",")
-				var fake=[]
-				for c in comps:
-					var v=float(c.strip_edges())
-					var d=v*randf_range(-0.02,0.02)+randf_range(-1e-6,1e-6)
-					fake.append(fmt9(redondeo_n(v+d)))
-				var f=", ".join(fake)
-				if not opciones.has(f): opciones.append(f)
-		else:
-			var c=respuesta_correcta
-			opciones.append(c)
-			while opciones.size()<4:
-				var delta=randf_range(-0.02*abs(c),0.02*abs(c))
-				var f=redondeo_n(c+delta)
-				if not opciones.has(f): opciones.append(f)
-	else:
-		opciones.append(respuesta_comprobacion)
-		while opciones.size()<4:
-			var comps=respuesta_comprobacion.split(",")
-			var fake=[]
-			for c in comps:
-				var v=float(c.strip_edges())
-				var delta=randf_range(-0.015*abs(v),0.015*abs(v))
-				fake.append(fmt9(redondeo_n(v+delta)))
-			var f=", ".join(fake)
-			if not opciones.has(f): opciones.append(f)
-	opciones.shuffle()
+	preparar_opciones_etapa1()
 	mostrar_pregunta()
 
+	print("\n--- Integral generada ---")
+	print("f(x) = ", funcion_texto)
+	print("Intervalo: [", a, ",", b, "]    n =", n)
+	print("Método:", metodo_actual)
+	print("Aproximación (metodo):", respuesta_correcta)
+	print("Integral exacta (polinomio):", fmt9(integral_exacta(coefs, a, b)))
+	print("h calculado (según fórmula del método):", fmt1(h_correcto))
+
+# -----------------------------
+# resto del código sin cambios
+# -----------------------------
+func preparar_opciones_etapa1():
+	opciones.clear()
+	opciones.append(respuesta_correcta)
+	while opciones.size() < 4:
+		var scale = max(1.0, abs(float(respuesta_correcta)))
+		var delta = randf_range(-0.03 * scale, 0.03 * scale)
+		var fake = float(respuesta_correcta) + delta
+		var sf = fmt9(fake)  # <- usa mismo formato que la respuesta real
+		if not opciones.has(sf):
+			opciones.append(sf)
+	opciones.shuffle()
+
 func mostrar_pregunta():
-	var txt = ""
-
-
 	if etapa == 1:
-		print("\n[CONSOLA] Etapa 1:")
-
-		if typeof(respuesta_correcta) == TYPE_STRING:
-			var n = respuesta_correcta.split(",").size()
-			print("  → Debes responder", n, "coeficientes:")
-			for i in range(n):
-				print("     - Coeficiente x%d" % (i+1))
-		else:
-			print("  → Debes responder 1 coeficiente:")
-			print("     - Coeficiente x1")
-
+		var texto = "Método: %s\nIntegral: \n∫_{%d}^{%d} \n%s dx\nn = %d\n" % [metodo_actual,a, b, funcion_texto, n]
+		label_problema.text = texto
+		boton1.text = opciones[0]
+		boton2.text = opciones[1]
+		boton3.text = opciones[2]
+		boton4.text = opciones[3]
 	else:
-		print("\n[CONSOLA] Etapa 2:")
-		var comps = respuesta_comprobacion.split(",")
-		print("  → Debes responder", comps.size(), "coeficientes restantes:")
-		for i in range(comps.size()):
-			print("     - Coeficiente x%d" % (i+1))
-
-
-
-	if etapa == 1:
-		txt = "Mínimos cuadrados - %s\n%s " % [metodo_actual, modelo_texto]
-		txt += "Ingresa "
-
-		if typeof(respuesta_correcta) == TYPE_STRING:
-			txt += "los coeficientes: x0 y x1\n" 
-			txt += "Tabla (x,y):\n"
-			for i in range(x_vals.size()):
-				txt += "  x=%.2f   y=%.2f\n" % [x_vals[i], y_vals[i]]
-
-		else:
-			txt += "el coeficiente x0\n"
-			txt += "Tabla (x,y):\n"
-			for i in range(x_vals.size()):
-				txt += "  x=%.2f   y=%.2f\n" % [x_vals[i], y_vals[i]]
-
-	else:
-		txt = "Mínimos cuadrados - \nIngresa los coeficientes restantes.\n\n" \
-		% [metodo_actual, modelo_texto]
-		
-	label_problema.text = txt
-
-	boton1.text = fmt9(opciones[0]) if typeof(opciones[0]) == TYPE_FLOAT else str(opciones[0])
-	boton2.text = fmt9(opciones[1]) if typeof(opciones[1]) == TYPE_FLOAT else str(opciones[1])
-	boton3.text = fmt9(opciones[2]) if typeof(opciones[2]) == TYPE_FLOAT else str(opciones[2])
-	boton4.text = fmt9(opciones[3]) if typeof(opciones[3]) == TYPE_FLOAT else str(opciones[3])
-
-	label_problema.text=txt
-
-	boton1.text = fmt9(opciones[0]) if typeof(opciones[0])==TYPE_FLOAT else str(opciones[0])
-	boton2.text = fmt9(opciones[1]) if typeof(opciones[1])==TYPE_FLOAT else str(opciones[1])
-	boton3.text = fmt9(opciones[2]) if typeof(opciones[2])==TYPE_FLOAT else str(opciones[2])
-	boton4.text = fmt9(opciones[3]) if typeof(opciones[3])==TYPE_FLOAT else str(opciones[3])
+		var correct_h_s = "%.10f" % h_correcto  
+		var opts_h = [correct_h_s]
+		while opts_h.size() < 4:
+			var delta = randf_range(-0.5 * max(1.0, abs(h_correcto)), 0.5 * max(1.0, abs(h_correcto)))
+			var fake_h = h_correcto + delta
+			var s = "%.10f" % fake_h
+			if not opts_h.has(s):
+				opts_h.append(s)
+		opts_h.shuffle()
+		label_problema.text = "Selecciona el valor de h usado:\n"
+		boton1.text = opts_h[0]
+		boton2.text = opts_h[1]
+		boton3.text = opts_h[2]
+		boton4.text = opts_h[3]
 
 func _on_opcion_1_pressed(): procesar_respuesta(0)
 func _on_opcion_2_pressed(): procesar_respuesta(1)
@@ -336,28 +292,33 @@ func _on_opcion_3_pressed(): procesar_respuesta(2)
 func _on_opcion_4_pressed(): procesar_respuesta(3)
 
 func procesar_respuesta(index):
-	var elegido = opciones[index]
-	if etapa==1:
-		var ok=false
-		if typeof(respuesta_correcta)==TYPE_STRING:
-			ok = str(elegido)==str(respuesta_correcta)
+	if etapa == 1:
+		var elegido = opciones[index]
+		if elegido == respuesta_correcta:
+			print("Etapa1: correcto seleccionado:", elegido)
+			etapa = 2
+			mostrar_pregunta()
 		else:
-			ok = redondeo_n(float(elegido))==redondeo_n(float(respuesta_correcta))
-		if ok:
-			etapa=2
-			print("Respuesta Etapa1 correcta seleccionada:", elegido)
-			preparar_opciones()
-		else:
-			print("Respuesta Etapa1 incorrecta:", elegido)
-			Global.trivia_exito=false
+			print("Etapa1: incorrecto seleccionado:", elegido, " - correcto:", respuesta_correcta)
+			Global.trivia_exito = false
 			_regresar_a_batalla()
 	else:
-		if str(elegido)==str(respuesta_comprobacion):
-			print("Respuesta Etapa2 correcta seleccionada:", elegido)
-			Global.trivia_exito=true
+		var elegido_h_s = ""
+		if index == 0:
+			elegido_h_s = boton1.text
+		elif index == 1:
+			elegido_h_s = boton2.text
+		elif index == 2:
+			elegido_h_s = boton3.text
 		else:
-			print("Respuesta Etapa2 incorrecta:", elegido)
-			Global.trivia_exito=false
+			elegido_h_s = boton4.text
+		var correcto_h_s = "%.10f" % h_correcto
+		if elegido_h_s == correcto_h_s:
+			print("Etapa2: h correcto seleccionado:", elegido_h_s)
+			Global.trivia_exito = true
+		else:
+			print("Etapa2: h incorrecto seleccionado:", elegido_h_s, " - correcto:", correcto_h_s)
+			Global.trivia_exito = false
 		_regresar_a_batalla()
 
 func iniciar_temporizador():
@@ -366,23 +327,28 @@ func iniciar_temporizador():
 
 func temporizador_tick():
 	await get_tree().create_timer(1.0).timeout
-	tiempo_restante-=1
+	tiempo_restante -= 1
 	actualizar_tiempo_label()
-	if tiempo_restante>0:
+	if tiempo_restante > 0:
 		temporizador_tick()
 	else:
-		Global.trivia_exito=false
+		Global.trivia_exito = false
 		_regresar_a_batalla()
 
 func actualizar_tiempo_label():
-	var minutos=int(tiempo_restante/60)
-	var segundos=int(tiempo_restante%60)
-	label_tiempo.text="Tiempo: %02d:%02d" % [minutos,segundos]
+	label_tiempo.text = "Tiempo: %02d:%02d" % [int(tiempo_restante / 60), int(tiempo_restante % 60)]
 
 func _regresar_a_batalla():
 	var escena_batalla = ""
-	match Global.batalla_actual:
-		1: escena_batalla = "res://Escenas/Mundo 5/Batalla_1.tscn"
-		2: escena_batalla = "res://Escenas/Mundo 5/Batalla_2.tscn"
-		3: escena_batalla = "res://Escenas/Mundo 5/Batalla_3.tscn"
-	get_tree().change_scene_to_file(escena_batalla)
+	var mundo_atual = Global.mundo_actual 
+	if mundo_atual == 7:
+		Global.batalla_final += 1
+		escena_batalla ="res://Escenas/Mundo 7/Batalla_1.tscn"
+		get_tree().change_scene_to_file(escena_batalla)
+	
+	else:
+		match Global.batalla_actual:
+			1: escena_batalla = "res://Escenas/Mundo 5/Batalla_1.tscn"
+			2: escena_batalla = "res://Escenas/Mundo 5/Batalla_2.tscn"
+			3: escena_batalla = "res://Escenas/Mundo 5/Batalla_3.tscn"
+		get_tree().change_scene_to_file(escena_batalla)

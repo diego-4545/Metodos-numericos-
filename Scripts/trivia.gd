@@ -302,8 +302,15 @@ func procesar_respuesta(index):
 
 func _regresar_a_batalla():
 	var escena_batalla = ""
-	match Global.batalla_actual:
-		1: escena_batalla = "res://Escenas/Mundo 1/Batalla_1.tscn"
-		2: escena_batalla = "res://Escenas/Mundo 1/Batalla_2.tscn"
-		3: escena_batalla = "res://Escenas/Mundo 1/Batalla_3.tscn"
-	get_tree().change_scene_to_file(escena_batalla)
+	var mundo_atual = Global.mundo_actual 
+	if mundo_atual == 7:
+		Global.batalla_final += 1
+		escena_batalla ="res://Escenas/Mundo 7/Batalla_1.tscn"
+		get_tree().change_scene_to_file(escena_batalla)
+	
+	else:
+		match Global.batalla_actual:
+			1: escena_batalla = "res://Escenas/Mundo 1/Batalla_1.tscn"
+			2: escena_batalla = "res://Escenas/Mundo 1/Batalla_2.tscn"
+			3: escena_batalla = "res://Escenas/Mundo 1/Batalla_3.tscn"
+		get_tree().change_scene_to_file(escena_batalla)
