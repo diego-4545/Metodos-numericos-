@@ -63,7 +63,7 @@ size_flags_horizontal = 3
 
 [connection signal="pressed" from="Control/HBoxContainer/Opcion1" to="Control" method="_on_opcion_1_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Opcion1" to="Control" method="_on_boton_exito_pressed"]
-[connection signal="pressed" from="Control/HBoxContainer/Opcion2" to="Control" method="_on_opcion_2_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Opcion2" to="Control" method="_on_boton_fallo_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Opcion2" to="Control" method="_on_opcion_2_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Opcion3" to="Control" method="_on_opcion_3_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Opcion4" to="Control" method="_on_opcion_4_pressed"]

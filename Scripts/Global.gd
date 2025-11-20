@@ -23,11 +23,11 @@ var batalla_final = 1
 var mundo_actual = 1
 
 var metodos_por_tema = {
-	"Interpolacion": ["Lineal","NewtonAdelante","NewtonAtras","DiferenciasDivididas","Lagrange"],
-	"EcuacionesNoLineales": ["Grafico", "FalsaPosicion", "PuntoFijo", "Secante"],
-	"SistemasLineales": ["EliminacionGaussiana", "GaussJordan", "Montante", "Jacobi", "GaussSeidel"],
-	"MinimosCuadrados": ["Recta","Cuadrática","Cúbica","LinealFunción","CuadraticaFunción"],
-	"Integrales": ["Trapecio", "Simpson1/3", "Simpson3/8", "Newton-CotesCerrados", "Newton-CotesAbiertos"],
+	"Interpolacion": ["Lineal","Newton-Hacia-Adelante","Newton-Hacia-Atras","Newton-Diferencias-Divididas","Lagrange"],
+	"EcuacionesNoLineales": ["Grafico", "Falsa-Posicion", "Punto-Fijo", "Secante"],
+	"SistemasLineales": ["Eliminacion-Gaussiana", "Gauss-Jordan", "Montante", "Jacobi", "Gauss-Seidel"],
+	"MinimosCuadrados": ["Recta","Cuadrática","Cúbica","Lineal-Con-Función","Cuadratica-Con-Función"],
+	"Integrales": ["Trapecio", "Simpson1/3", "Simpson3/8", "Newton-Cotes-Cerrados", "Newton-Cotes-Abiertos"],
 	"EcuacionesDiferenciales": ["EulerModificado","Runge-Kutta-2doOrden","Runge-Kutta-3erOrden","Runge-Kutta-1/3Simpson","Runge-Kutta-3/8Simpson","Runge-Kutta-Orden-Superior"]
 }
 

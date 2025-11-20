@@ -229,9 +229,9 @@ func generar_trivia():
 			approx = regla_simpson13_compuesta(a, b, n)
 		"Simpson3/8":
 			approx = regla_simpson38_compuesta(a, b, n)
-		"Newton-CotesCerrados":
+		"Newton-Cotes-Cerrados":
 			approx = regla_cerrada_general(a, b, n)
-		"Newton-CotesAbiertos":
+		"Newton-Cotes-Abiertos":
 			approx = regla_abierta_general(a, b, n)
 
 	respuesta_correcta = fmt9(approx)

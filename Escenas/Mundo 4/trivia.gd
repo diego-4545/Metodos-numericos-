@@ -89,9 +89,9 @@ func construir_disenio_y(modo):
 				row = [1.0, x, x*x]
 			"Cúbica":
 				row = [1.0, x, x*x, x*x*x]
-			"LinealFunción":
+			"Lineal-Con-Función":
 				row = [1.0, x, _eval_func(true_coefs[3], x)]
-			"CuadraticaFunción":
+			"Cuadratica-Con-Función":
 				row = [1.0, x, x*x, _eval_func(true_coefs[4], x)]
 		X.append(row)
 	return X
@@ -185,12 +185,12 @@ func generar_trivia():
 		"Cúbica":
 			modelo_texto = ""
 			true_coefs = [randf_range(-1.5,1.5),randf_range(-1.5,1.5),randf_range(-1.0,1.0),randf_range(-0.5,0.5)]
-		"LinealFunción":
+		"Lineal-Con-Función":
 			var func_id = randi()%3
 			var fname = "sin" if func_id==0 else "cos" if func_id==1 else "tan"
 			modelo_texto = "%s(x)" % fname
 			true_coefs = [randf_range(-2.0,2.0),randf_range(-2.0,2.0),randf_range(-2.0,2.0),func_id]
-		"CuadraticaFunción":
+		"Cuadratica-Con-Función":
 			var func_id = randi()%3
 			var fname = "sin" if func_id==0 else "cos" if func_id==1 else "tan"
 			modelo_texto = "%s(x)" % fname

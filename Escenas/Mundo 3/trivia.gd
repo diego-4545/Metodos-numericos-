@@ -73,7 +73,7 @@ func determinante_3x3(A):
 		 + A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0])
 
 func generar_trivia():
-	var metodos_disponibles = ["EliminacionGauss", "GaussJordan", "Montante", "GaussSeidel", "Jacobi"]
+	var metodos_disponibles = ["Eliminacion-Gaussiana", "Gauss-Jordan", "Montante", "Gauss-Seidel", "Jacobi"]
 	var usados = Global.metodos_usados.get("SistemasLineales", [])
 	if usados.size() == metodos_disponibles.size():
 		Global.metodos_usados["SistemasLineales"].clear()
@@ -92,13 +92,13 @@ func generar_trivia():
 	var B = sistema[1]
 
 	match metodo_actual:
-		"EliminacionGauss":
+		"Eliminacion-Gaussiana":
 			respuesta_correcta = metodo_gauss(A,B)
-		"GaussJordan":
+		"Gauss-Jordan":
 			respuesta_correcta = metodo_gauss_jordan(A,B)
 		"Montante":
 			respuesta_correcta = metodo_montante(A,B)
-		"GaussSeidel":
+		"Gauss-Seidel":
 			respuesta_correcta = metodo_gauss_seidel(A,B,0.001)
 		"Jacobi":
 			respuesta_correcta = metodo_jacobi(A,B,0.001)

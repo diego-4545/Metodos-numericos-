@@ -3562,7 +3562,7 @@ texture_filter = 1
 position = Vector2(136, 169)
 scale = Vector2(14.400001, 12.062503)
 sprite_frames = SubResource("SpriteFrames_4myy0")
-animation = &"Muerte"
+animation = &"Golpe"
 offset = Vector2(10, 15)
 
 [node name="ManosJ" type="AnimatedSprite2D" parent="Control"]
@@ -3580,9 +3580,18 @@ texture_filter = 1
 position = Vector2(205, 301)
 scale = Vector2(3.46617, 3.1688254)
 sprite_frames = SubResource("SpriteFrames_4myy0")
-animation = &"Curar"
-frame_progress = 0.30603555
+animation = &"EnemigoD"
 offset = Vector2(10, 15)
+
+[node name="Enemigo" type="AnimatedSprite2D" parent="Control"]
+top_level = true
+texture_filter = 1
+position = Vector2(937, 266.99997)
+scale = Vector2(1.9213935, 1.9270746)
+sprite_frames = SubResource("SpriteFrames_4myy0")
+animation = &"EnemigoD"
+offset = Vector2(10, 15)
+flip_h = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control"]
 top_level = true

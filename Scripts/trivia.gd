@@ -58,10 +58,11 @@ func generar_trivia():
 			y_tabla = [redondear_2(log(x0)), redondear_2(log(x1))]
 			valor_a_interpolar = redondear_2(x0 + randf() * (x1 - x0))
 			respuesta_correcta = redondeo_preciso(interpolacion_lineal(x0, y_tabla[0], x1, y_tabla[1], valor_a_interpolar))
+			print(respuesta_correcta)
 			respuesta_comprobacion = redondeo_preciso(log(valor_a_interpolar) - respuesta_correcta)
 			print(respuesta_comprobacion)
 
-		"NewtonAdelante":
+		"Newton-Hacia-Adelante":
 			x_tabla = [1, 2, 3, 4]
 			y_tabla = [
 				redondear_2(2 + randf() * 2),
@@ -74,7 +75,7 @@ func generar_trivia():
 			respuesta_comprobacion = redondeo_preciso((valor_a_interpolar - x_tabla[0]) / (x_tabla[1] - x_tabla[0]))
 			print(respuesta_comprobacion)
 
-		"NewtonAtras":
+		"Newton-Hacia-Atras":
 			x_tabla = [3, 4, 5, 6]
 			y_tabla = [
 				redondear_2(10 + randf() * 5),
@@ -94,7 +95,7 @@ func generar_trivia():
 			print(respuesta_comprobacion)
 
 
-		"DiferenciasDivididas":
+		"Newton-Diferencias-Divididas":
 			x_tabla = [2, 4, 7]
 			y_tabla = [
 				redondear_2(2 + randf() * 3),
@@ -169,11 +170,11 @@ func preparar_opciones(valor):
 		match metodo_actual:
 			"Lineal":
 				label_problema.text = "Método: Lineal\nIngresa el margen de error"
-			"NewtonAdelante", "NewtonAtras":
+			"Newton-Hacia-Adelante", "Newton-Hacia-Atras":
 				label_problema.text = "Método: %s\nIngresa s" % metodo_actual
 			"Lagrange":
-				label_problema.text = "Método: Lagrange\nIngresa el valor de y en la tabla"
-			"DiferenciasDivididas":
+				label_problema.text = "Método: Lagrange\nIngresa el valor de y1 en la tabla"
+			"Newton-Diferencias-Divididas":
 				label_problema.text = "Método: Diferencias Divididas\nIngresa d11"
 
 	mostrar_opciones()

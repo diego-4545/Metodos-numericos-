@@ -76,9 +76,9 @@ func generar_trivia():
 	match metodo_actual:
 		"Grafico":
 			resultado = metodo_grafico(f)
-		"FalsaPosicion":
+		"Falsa-Posicion":
 			resultado = metodo_falsa_posicion(f, -3, 3, 0.0001)
-		"PuntoFijo":
+		"Punto-Fijo":
 			resultado = metodo_punto_fijo(f, 0.5, 0.001)
 		"Secante":
 			resultado = metodo_secante(f, 0.5, 0.7, 0.001)
@@ -88,17 +88,57 @@ func generar_trivia():
 	preparar_opciones(respuesta_correcta)
 
 func metodo_grafico(f):
-	var x = -3.0
-	var anterior = x
-	var iter = 0
-	while abs(f.call(x)) > 0.001 and x < 3.0:
-		iter += 1
-		anterior = x
-		x += 0.001
-		print("Iteración %d: x = %.5f, f(x) = %.5f" % [iter, x, f.call(x)])
-	var margen = abs(x - anterior)
-	print("→ Raíz aproximada: %.5f, Margen de error: %.8f, Iteraciones: %d\n" % [x, margen, iter])
-	return [redondeo_preciso(x), redondeo_preciso(margen)]
+	var x = -10
+	var paso = 1
+	var intervalo = ""
+
+	while x < 10:
+		var a = x
+		var b = x + 1
+		var fa = f.call(a)
+		var fb = f.call(b)
+
+		if fa * fb < 0:
+			intervalo = str(a) + "|" + str(b)
+			break
+
+		x += 1
+
+	if intervalo == "":
+		push_error("No se encontró intervalo con cambio de signo")
+		return ["", 0]
+
+
+	if etapa == 1:
+		print (intervalo)
+		return [intervalo, 0]
+
+
+	var partes = intervalo.split("|")
+	var a2 = float(partes[0])
+	var b2 = float(partes[1])
+
+	var fa2 = f.call(a2)
+	var fb2 = f.call(b2)
+
+	var tol = 0.002
+	var margen = abs(b2 - a2)
+	var c = 0.0
+	var fc = 0.0
+
+	while margen > tol:
+		c = (a2 + b2) / 2.0
+		fc = f.call(c)
+
+		if fa2 * fc < 0:
+			b2 = c
+			fb2 = fc
+		else:
+			a2 = c
+			fa2 = fc
+		margen = abs(b2 - a2)
+	print (c)
+	return [c, margen]
 
 func metodo_falsa_posicion(f, a, b, tol):
 	var fa = f.call(a)
@@ -157,35 +197,103 @@ func metodo_secante(f, x0, x1, tol):
 		x1 = x2
 		iteraciones += 1
 		print(iteraciones)
+		print(x2)
 	var margen = abs(x2 - anterior)
-	
+	print(margen)
 	return [redondeo_preciso(x2), redondeo_preciso(margen)]
 
 func preparar_opciones(valor):
 	opciones.clear()
+
+	if metodo_actual == "Grafico":
+		if etapa == 1:
+			if typeof(valor) != TYPE_STRING:
+				push_error("preparar_opciones: en etapa 1 (Grafico) se esperaba STRING, llegó: " + str(valor))
+				return
+
+			opciones.append(valor)
+
+			var partes = valor.split("|")
+			if partes.size() != 2:
+				push_error("preparar_opciones: intervalo mal formado: " + valor)
+				return
+
+			var correcto_a = int(float(partes[0].strip_edges()))
+
+			while opciones.size() < 4:
+				var desplaz = (randi() % 5) - 2   
+				var a_falso = correcto_a + desplaz
+				var b_falso = a_falso + 1
+				var intervalo_falso = str(a_falso) + "|" + str(b_falso)
+				if not opciones.has(intervalo_falso):
+					opciones.append(intervalo_falso)
+
+			opciones.shuffle()
+			mostrar_pregunta()
+			return
+
+		if etapa == 2:
+			var raiz = 0.0
+			if typeof(valor) == TYPE_STRING:
+				raiz = float(valor.strip_edges())
+			else:
+				raiz = float(valor)
+
+			opciones = [ redondeo_preciso(raiz) ]
+			while opciones.size() < 4:
+				var variacion = randf_range_custom(-0.1, 0.1)
+				var falsa = redondeo_preciso(raiz + variacion)
+				if not opciones.has(falsa):
+					opciones.append(falsa)
+
+			opciones.shuffle()
+			mostrar_pregunta()
+			return
+
+
+	var valor_num = float(valor)
+
 	if etapa == 1:
-		opciones = [valor]
+		opciones = [valor_num]
 		while opciones.size() < 4:
-			var falsa = valor + randf_range_custom(-2.0, 2.0)
+			var falsa = valor_num + randf_range_custom(-2.0, 2.0)
 			falsa = redondeo_preciso(falsa)
-			if !opciones.has(falsa):
+			if not opciones.has(falsa):
 				opciones.append(falsa)
+
 	else:
-		opciones = [valor]
+		opciones = [valor_num]
 		while opciones.size() < 4:
 			var variacion = randf_range_custom(-0.0005, 0.0005)
-			var falsa = valor + variacion
+			var falsa = valor_num + variacion
 			falsa = redondeo_preciso(falsa)
-			if falsa > 0 and !opciones.has(falsa):
+
+			if falsa > 0 and not opciones.has(falsa):
 				opciones.append(falsa)
+
 	opciones.shuffle()
 	mostrar_pregunta()
 
+
 func mostrar_pregunta():
+
+
+	if metodo_actual == "Grafico":
+
+		if etapa == 1:
+			label_problema.text = "Resuelve el siguiente problema:\n%s\nMétodo: %s\nEncuentra los intervalos en los\nque se encuentra una raiz." % [ecuacion_texto, metodo_actual]
+		else:
+			label_problema.text = "Método Bisectriz:\n\nAhora selecciona la \nrespuesta más cercana a una raiz."
+		
+		mostrar_opciones()
+		return
+
+
 	if etapa == 1:
 		label_problema.text = "Resuelve el siguiente problema:\n%s\nMétodo: %s\n\nEncuentra la raíz aproximada." % [ecuacion_texto, metodo_actual]
 	else:
-		label_problema.text = "\n\n\nIndica el margen de error." % [ecuacion_texto, metodo_actual]
+		label_problema.text = "Indica el margen de error."
+
 	mostrar_opciones()
 
 func mostrar_opciones():
@@ -200,6 +308,33 @@ func _on_opcion_3_pressed(): procesar_respuesta(2)
 func _on_opcion_4_pressed(): procesar_respuesta(3)
 
 func procesar_respuesta(index):
+
+	if metodo_actual == "Grafico":
+
+		var opcion = str(opciones[index]).strip_edges()
+		var correcta = str(respuesta_correcta).strip_edges()
+
+		if etapa == 1:
+			if opcion == correcta:
+				etapa = 2
+				var res = metodo_grafico(f)
+				respuesta_comprobacion = res[0]		
+				preparar_opciones(respuesta_comprobacion)
+			else:
+				Global.trivia_exito = false
+				_regresar_a_batalla()
+			return
+		if etapa == 2:
+			var elegido = float(opciones[index])
+
+			if redondeo_preciso(elegido) == redondeo_preciso(respuesta_comprobacion):
+				Global.trivia_exito = true
+			else:
+				Global.trivia_exito = false
+
+			_regresar_a_batalla()
+			return
+
 	if etapa == 1:
 		if redondeo_preciso(opciones[index]) == redondeo_preciso(respuesta_correcta):
 			etapa = 2
@@ -207,6 +342,7 @@ func procesar_respuesta(index):
 		else:
 			Global.trivia_exito = false
 			_regresar_a_batalla()
+
 	elif etapa == 2:
 		Global.trivia_exito = redondeo_preciso(opciones[index]) == redondeo_preciso(respuesta_comprobacion)
 		_regresar_a_batalla()
