@@ -1589,7 +1589,6 @@ animation = &"Invisible"
 offset = Vector2(10, 15)
 
 [node name="Curar" type="AnimatedSprite2D" parent="Control"]
-visible = false
 top_level = true
 texture_filter = 1
 position = Vector2(205, 301)
